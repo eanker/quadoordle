@@ -1607,20 +1607,20 @@ function do_share(copy, shareType) {
 
     var shouldShowWords = line >= 9 || (answer_correct[0] >= 0 && answer_correct[1] >= 0 && answer_correct[2] >= 0 && answer_correct[3] >= 0);
     if (daily_mode) {
-        text_share = "Daily Quordle #" + seed.toString(10) + "\n" +
+        text_share = "Dagelijkse Quadoordle #" + seed.toString(10) + "\n" +
             get_num_emoji(answer_correct[0]) +
             get_num_emoji(answer_correct[1]) + "\n" +
             get_num_emoji(answer_correct[2]) +
             get_num_emoji(answer_correct[3]);
     } else {
-        text_share = "Quordle\n" +
+        text_share = "Quadoordle\n" +
             get_num_emoji(answer_correct[0]) +
             get_num_emoji(answer_correct[1]) + (shouldShowWords ? " " + answer[0].toUpperCase() + " - " + answer[1].toUpperCase() : "") + "\n" +
             get_num_emoji(answer_correct[2]) +
             get_num_emoji(answer_correct[3]) + (shouldShowWords ? " " + answer[2].toUpperCase() + " - " + answer[3].toUpperCase() : "");
     }
 
-    text_share += "\eanker.nl/quadoordle";
+    text_share += "\neanker.nl/quadoordle";
     text_mobile_share = text_share
     text_share += "\n"
 
