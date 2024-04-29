@@ -1021,7 +1021,7 @@ function initFree() {
     if (window.gtag) {
         gtag("event", "start", {
             mode: "free",
-            daily_seed: seedParam 
+            daily_seed: seedParam
         });
     }
 }
@@ -1306,7 +1306,13 @@ function restart() {
         }
         rnd = new MersenneTwister(seed);
     } else if (free_mode) {
-        if (!no_localstorage) {
+        // Parse the seed from the URL parameters for free mode
+        var params = new URLSearchParams(location.search);
+        var seedParam = params.get("seed");
+        if (seedParam) {
+            rnd = new MersenneTwister(Number(seedParam));
+        }
+        else if (!no_localstorage) {
             try {
                 var freeSeed = window.localStorage.getItem("last_free");
                 if (freeSeed) {
@@ -1316,7 +1322,7 @@ function restart() {
                     window.localStorage.setItem("last_free", freeSeed);
                     rnd = new MersenneTwister(freeSeed);
                 }
-              var paramsToSet = {
+            var paramsToSet = {
                 mode: "free",
                 seed: freeSeed
               };  
