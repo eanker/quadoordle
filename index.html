@@ -1308,9 +1308,9 @@ function restart() {
     } else if (free_mode) {
         // Parse the seed from the URL parameters for free mode
         var params = new URLSearchParams(location.search);
-        var seedParam = params.get("seed");
-        if (seedParam) {
-            rnd = new MersenneTwister(Number(seedParam));
+        var freeSeed = params.get("seed");
+        if (freeSeed) {
+            rnd = new MersenneTwister(Number(freeSeed));
         }
         else if (!no_localstorage) {
             try {
