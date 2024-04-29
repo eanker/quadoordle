@@ -993,11 +993,23 @@ function initDaily() {
 function initFree() {
     daily_mode = false;
     free_mode = true;
+
+    // Parse the seed from the URL parameters
+    var params = new URLSearchParams(location.search);
+    var seedParam = params.get("seed");
+    if (seedParam) {
+        rnd = new MersenneTwister(Number(seedParam));
+    } else {
+        // If no seed is provided, generate a new one
+        rnd = new MersenneTwister();
+    }
+
     restart();
     acquire("title").style.display = "none";
     acquire("game").style.display = "flex";
     acquire("tutorial").style.display = "none";
-    acquire("reset_free").style.display= "";
+    acquire("reset_free").style.display = "";
+
     if (canGoFullscreen()) {
         acquire("fullscreen").style.display = "";
         acquire("exit_fullscreen").style.display = "none";
@@ -1005,10 +1017,11 @@ function initFree() {
         acquire("fullscreen").style.display = "none";
         acquire("exit_fullscreen").style.display = "none";
     }
+
     if (window.gtag) {
         gtag("event", "start", {
             mode: "free",
-            daily_seed: undefined
+            daily_seed: seedParam 
         });
     }
 }
@@ -1303,6 +1316,11 @@ function restart() {
                     window.localStorage.setItem("last_free", freeSeed);
                     rnd = new MersenneTwister(freeSeed);
                 }
+              var paramsToSet = {
+                mode: "free",
+                seed: freeSeed
+              };  
+        pushHistory(paramsToSet);
             } catch (e) {
                 no_localstorage = true;
             }
