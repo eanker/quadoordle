@@ -922,11 +922,12 @@ function pushHistory(paramsToSet) {
         }
     }
     var paramsString = searchParams.toString()
+    console.log(paramsString)
     if (paramsString !== paramsStringBefore) {
         if (paramsString) {
             window.history.pushState({}, "", location.pathname + "?" + paramsString);
         } else {
-            window.history.pushState({}, "", location.pathname);
+        window.history.pushState({}, "", location.pathname);
         }
         onStateChange();
     }
@@ -1306,36 +1307,24 @@ function restart() {
         }
         rnd = new MersenneTwister(seed);
     } else if (free_mode) {
+        console.log("hi")
         // Parse the seed from the URL parameters for free mode
         var params = new URLSearchParams(location.search);
-        var freeSeed = params.get("seed");
-        if (freeSeed) {
-            rnd = new MersenneTwister(Number(freeSeed));
-        }
-        else if (!no_localstorage) {
-            try {
-                var freeSeed = window.localStorage.getItem("last_free");
-                if (freeSeed) {
-                    rnd = new MersenneTwister(Number(freeSeed));
-                } else {
-                    freeSeed = new Date().getTime();
-                    window.localStorage.setItem("last_free", freeSeed);
-                    rnd = new MersenneTwister(freeSeed);
-                }
-
-            } catch (e) {
-                no_localstorage = true;
-            }
-        }
-        if (!rnd) {
-            rnd = new MersenneTwister();
-        }
-        var paramsToSet = {
+        var seedParam = params.get("seed");
+        if (seedParam) {
+            rnd = new MersenneTwister(Number(seedParam));
+        } else {
+            // If no seed is provided, generate a new one
+            seedParam = new Date().getTime();
+            rnd = new MersenneTwister(seedParam);
+            // Update the URL parameters with the new seed
+            var paramsToSet = {
                 mode: "free",
-                seed: freeSeed
-              };  
-        pushHistory(paramsToSet);
-        printclear(acquire("game_title"), "random quadoordle");
+                seed: seedParam
+            };
+            pushHistory(paramsToSet); // Call pushHistory here to update URL
+        }
+        printclear(acquire("game_title"), "free quordle");
     }
     rnd.genrand_int31();
     rnd.genrand_int31();
@@ -1371,6 +1360,8 @@ function restart() {
         share[2].push("\u2B1B\u2B1B\u2B1B\u2B1B\u2B1B");
         share[3].push("\u2B1B\u2B1B\u2B1B\u2B1B\u2B1B");
     }
+
+    share[4] = seedParam;
 
     acquire("keyboard").style.display = "";
     render_bg_keys();
@@ -1553,8 +1544,11 @@ acquire("reset_free").onclick = function() {
     if (isInWebViewiOS || confirm("Are you sure you want to start a new Free Quordle? (The current game will be deleted)")) {
         window.localStorage.removeItem("free_guesses");
         window.localStorage.removeItem("last_free");
+        pushHistory({seed: undefined})
+
         initFree();
     }
+
 }
 
 function get_num_emoji(num) {
@@ -1620,6 +1614,7 @@ function do_share(copy, shareType) {
             get_num_emoji(answer_correct[1]) + "\n" +
             get_num_emoji(answer_correct[2]) +
             get_num_emoji(answer_correct[3]);
+            text_share += "\neanker.nl/quadoordle";
     } else {
         text_share = "Quadoordle\n" +
             get_num_emoji(answer_correct[0]) +
@@ -1627,8 +1622,8 @@ function do_share(copy, shareType) {
             get_num_emoji(answer_correct[2]) +
             get_num_emoji(answer_correct[3]) + (shouldShowWords ? " " + answer[2].toUpperCase() + " - " + answer[3].toUpperCase() : "");
     }
-
-    text_share += "\neanker.nl/quadoordle";
+    var searchParams = new URLSearchParams(location.search);
+    text_share += "\neanker.nl/quadoordle?" + searchParams;
     text_mobile_share = text_share
     text_share += "\n"
 
