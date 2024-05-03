@@ -922,7 +922,6 @@ function pushHistory(paramsToSet) {
         }
     }
     var paramsString = searchParams.toString()
-    console.log(paramsString)
     if (paramsString !== paramsStringBefore) {
         if (paramsString) {
             window.history.pushState({}, "", location.pathname + "?" + paramsString);
@@ -994,6 +993,16 @@ function initDaily() {
 function initFree() {
     daily_mode = false;
     free_mode = true;
+
+    // Parse the seed from the URL parameters
+    // var params = new URLSearchParams(location.search);
+    // var seedParam = params.get("seed");
+    // if (seedParam) {
+    //     rnd = new MersenneTwister(Number(seedParam));
+    // } else {
+    //     // If no seed is provided, generate a new one
+    //     rnd = new MersenneTwister();
+    // }
 
     restart();
     acquire("title").style.display = "none";
@@ -1301,18 +1310,15 @@ function restart() {
         var params = new URLSearchParams(location.search);
         var seedParam = params.get("seed");
         if (seedParam) {
-            rnd = new MersenneTwister(Number(seedParam));
-            window.localStorage.setItem("last_free", Number(seedParam));
+            window.localStorage.setItem("last_free", seedParam);
         } else{
             if(!no_localstorage){
                 try {
                     seedParam = window.localStorage.getItem("last_free");
                     if (seedParam) {
-                        rnd = new MersenneTwister(Number(seedParam));
                     } else {
                         seedParam = new Date().getTime();
                         window.localStorage.setItem("last_free", seedParam);
-                        rnd = new MersenneTwister(seedParam);
                     }
                 } catch (e) {
                     no_localstorage = true;
@@ -1320,7 +1326,6 @@ function restart() {
             } else{
                 // If no seed is provided, generate a new one
                 seedParam = new Date().getTime();
-                rnd = new MersenneTwister(seedParam);
             } 
             // Update the URL parameters with the new seed
             var paramsToSet = {
@@ -1330,8 +1335,10 @@ function restart() {
             // Call pushHistory here to update URL
             pushHistory(paramsToSet); 
         }
+        rnd = new MersenneTwister(Number(seedParam));
         printclear(acquire("game_title"), "random quadoordle");
     }
+
     rnd.genrand_int31();
     rnd.genrand_int31();
     rnd.genrand_int31();
