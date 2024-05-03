@@ -1356,8 +1356,18 @@ function restart() {
     guesses = [];
     guess_letters = [{}, {}, {}, {}];
     answer_correct = [-1, -1, -1, -1];
+    share = [[], [], [], []];
     guess_current = "";
 
+    for (var l = 0; l < 9; l++) {
+        clear_line(l);
+        share[0].push("\u2B1B\u2B1B\u2B1B\u2B1B\u2B1B");
+        share[1].push("\u2B1B\u2B1B\u2B1B\u2B1B\u2B1B");
+        share[2].push("\u2B1B\u2B1B\u2B1B\u2B1B\u2B1B");
+        share[3].push("\u2B1B\u2B1B\u2B1B\u2B1B\u2B1B");
+    }
+
+    share[4] = seedParam;
 
     acquire("keyboard").style.display = "";
     render_bg_keys();
