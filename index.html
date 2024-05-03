@@ -1310,27 +1310,25 @@ function restart() {
         var params = new URLSearchParams(location.search);
         var seedParam = params.get("seed");
         if (seedParam) {
-            rnd = new MersenneTwister(Number(seedParam));
-        }
-        else if (!no_localstorage) {
-            try {
-                var freeSeed = window.localStorage.getItem("last_free");
-                if (freeSeed) {
-                    rnd = new MersenneTwister(Number(freeSeed));
-                } else {
-                    freeSeed = new Date().getTime();
-                    window.localStorage.setItem("last_free", freeSeed);
-                    rnd = new MersenneTwister(freeSeed);
+            window.localStorage.setItem("last_free", seedParam);
+        } else{
+            if(!no_localstorage){
+                try {
+                    seedParam = window.localStorage.getItem("last_free");
+                    if (seedParam) {
+                    } else {
+                        seedParam = new Date().getTime();
+                        window.localStorage.setItem("last_free", seedParam);
+                    }
+                } catch (e) {
+                    no_localstorage = true;
                 }
-
-            } catch (e) {
-                no_localstorage = true;
-            }
-        }
-        if (!rnd) {
-            rnd = new MersenneTwister();
-        }
-        var paramsToSet = {
+            } else{
+                // If no seed is provided, generate a new one
+                seedParam = new Date().getTime();
+            } 
+            // Update the URL parameters with the new seed
+            var paramsToSet = {
                 mode: "free",
                 seed: seedParam
             };
