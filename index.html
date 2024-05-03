@@ -1322,11 +1322,15 @@ function restart() {
                     window.localStorage.setItem("last_free", freeSeed);
                     rnd = new MersenneTwister(freeSeed);
                 }
+<<<<<<< HEAD
             var paramsToSet = {
                 mode: "free",
                 seed: freeSeed
               };  
         pushHistory(paramsToSet);
+=======
+
+>>>>>>> e9d013a3a4b32287c469d225f3e9d98d773bc6f1
             } catch (e) {
                 no_localstorage = true;
             }
@@ -1334,6 +1338,11 @@ function restart() {
         if (!rnd) {
             rnd = new MersenneTwister();
         }
+        var paramsToSet = {
+                mode: "free",
+                seed: freeSeed
+              };  
+        pushHistory(paramsToSet);
         printclear(acquire("game_title"), "random quadoordle");
     }
     rnd.genrand_int31();
